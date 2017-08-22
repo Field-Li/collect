@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 启动扫描所有的controller -->
+    <context:component-scan base-package="com.*"/>
+
+    <!-- AOP -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <!-- enable auto-wired -->
+    <context:annotation-config/>
+
+    <bean id="cloner" class="com.rits.cloning.Cloner"/>
+
+
+    <!-- 定义自己的datasource factory -->
+    <bean id="dataSourceFactory" class="com.common.utils.DataSourceFactory" destroy-method="destroy"/>
+    <!-- 定义datasource -->
+    <bean id="wormHotelDataSource" factory-bean="dataSourceFactory" factory-method="getDataSource">
+        <constructor-arg type="java.lang.String" value="GroupWormholeDB_W"/>
+    </bean>
+
+    <bean id="wormHotelTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="wormHotelDataSource" />
+    </bean>
+    <bean id="wormHotelSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="wormHotelDataSource" />
+        <property name="mapperLocations" value="classpath*:com/mysql/mapper/*Mapper.xml"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.mysql.mapper" />
+        <property name="sqlSessionFactoryBeanName" value="wormHotelSqlSessionFactory" />
+    </bean>
+    <tx:annotation-driven transaction-manager="wormHotelTransactionManager" />
+
+
+    <mvc:interceptors>
+        <bean class="com.controller.mybatisInteceptor.SqlCostInterceptor"/>
+    </mvc:interceptors>
+
+    <!-- 配置freeMarker的模板路径 -->
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <!--property name="freemarkerSettings" ref="freemarkerConfiguration"/-->
+        <property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="template_update_delay">0</prop>
+                <prop key="default_encoding">UTF-8</prop>
+                <prop key="number_format">0.##########</prop>
+                <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+                <prop key="classic_compatible">true</prop>
+                <prop key="template_exception_handler">ignore</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 配置freeMarker视图解析器 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="contentType" value="text/html; charset=utf-8"/>
+        <property name="cache" value="true"/>
+        <property name="prefix" value=""/>
+        <property name="suffix" value=".ftl"/>
+        <property name="order" value="2"/>
+        <property name="requestContextAttribute" value="base"/>
+        <property name="viewClass" value="com.global.MyFreeMarkerView"/>
+    </bean>
+
+</beans>

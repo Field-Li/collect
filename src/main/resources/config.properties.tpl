@@ -1,0 +1,12 @@
+appendCount={$appendCount}
+appId={$appid}
+imgServiceUrl={$imgServiceUrl}
+clientSubenv={$clientSubEnv}
+fxService={$fxservice}
+ugcAppId={$ugcAppId}
+subAppId={$subAppId}
+ugcService={$UgcServiceUrl}
+imageUrl={$ImageUrl}
+httpUserName = {$httpUserName}
+httpPwd = {$httpPwd}
+TITANServiceURL={$TITANServiceURL}

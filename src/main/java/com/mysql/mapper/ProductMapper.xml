@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mysql.mapper.ProductMapper" >
+
+    <select id="selectProductOwnerId" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT DISTINCT ownerId FROM bnb_space where spaceId = #{productId,mode=IN,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectOwnerProductList" parameterType="java.lang.String" resultType="com.mysql.dto.ProductDto">
+        SELECT spaceId,ownerId FROM bnb_space where ownerId = #{ownerId,mode=IN,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateByProductId" parameterType="java.lang.Long">
+        update bnb_space set ownerId = 'testing' where spaceId = #{productId,mode=IN,jdbcType=BIGINT}
+    </update>
+
+</mapper>
