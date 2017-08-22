@@ -22,14 +22,12 @@ import java.util.Map;
  */
 @Controller
 public class welcomePageController {
-
     @Autowired
     private ProductMapper productMapper;
 
     @RequestMapping("/welcome")
-    public ModelAndView firstPage(){
-
-        Cloner cloner=new Cloner();
+    public ModelAndView firstPage() {
+        Cloner cloner = new Cloner();
         cloner.deepClone(ProductServiceImp.class);
 
 
@@ -49,7 +47,7 @@ public class welcomePageController {
     }
 
     @RequestMapping("/trigger")
-    public void triggerJobMannual() throws Exception{
+    public void triggerJobMannual() throws Exception {
         JobDetail job = JobBuilder.newJob(HelloJob.class)
                 .withIdentity("dummyJobName", "group1").build();
 
