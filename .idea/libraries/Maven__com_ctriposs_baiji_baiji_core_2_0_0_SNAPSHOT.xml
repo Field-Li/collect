@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.ctriposs.baiji:baiji-core:2.0.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ctriposs/baiji/baiji-core/2.0.0-SNAPSHOT/baiji-core-2.0.0-20160908.115741-4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ctriposs/baiji/baiji-core/2.0.0-SNAPSHOT/baiji-core-2.0.0-20160908.115741-4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ctriposs/baiji/baiji-core/2.0.0-SNAPSHOT/baiji-core-2.0.0-20160908.115741-4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
