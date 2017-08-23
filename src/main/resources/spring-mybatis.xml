@@ -44,7 +44,7 @@
 
 
     <mvc:interceptors>
-        <bean class="com.controller.mybatisInteceptor.SqlCostInterceptor"/>
+        <bean class="com.collect.mybatisInteceptor.SqlCostInterceptor"/>
     </mvc:interceptors>
 
     <!-- 配置freeMarker的模板路径 -->
