@@ -169,11 +169,6 @@
 
     <!-- logger -->
     <dependency>
-      <groupId>com.ctrip.framework.clogging</groupId>
-      <artifactId>clogging-agent</artifactId>
-      <version>3.4.9</version>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.10</version>
@@ -196,18 +191,6 @@
       <version>3.1.0</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.ctriposs.baiji</groupId>
-      <artifactId>baiji-rpc-server</artifactId>
-      <version>[1.0.0,2.0.0)</version>
-    </dependency>
-
-    <!-- ctrip common -->
-    <dependency>
-      <groupId>com.ctrip.security</groupId>
-      <artifactId>encryption</artifactId>
-      <version>1.0.0.1</version>
-    </dependency>
 
     <!--xml解析-->
     <dependency>
@@ -220,13 +203,6 @@
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
       <version>1.2.7</version>
-    </dependency>
-
-    <!-- DAL 相关-->
-    <dependency>
-      <groupId>com.ctrip.platform</groupId>
-      <artifactId>ctrip-dal-client</artifactId>
-      <version>1.0.1.6</version>
     </dependency>
 
     <dependency>

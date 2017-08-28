@@ -12,7 +12,7 @@
            http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- 启动扫描所有的controller -->
-    <context:component-scan base-package="com.*"/>
+    <context:component-scan base-package="com"/>
 
     <!-- AOP -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
@@ -23,25 +23,7 @@
 
 
     <!-- 定义自己的datasource factory -->
-    <bean id="dataSourceFactory" class="com.common.utils.DataSourceFactory" destroy-method="destroy"/>
     <!-- 定义datasource -->
-    <bean id="wormHotelDataSource" factory-bean="dataSourceFactory" factory-method="getDataSource">
-        <constructor-arg type="java.lang.String" value="GroupWormholeDB_W"/>
-    </bean>
-
-    <bean id="wormHotelTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="wormHotelDataSource" />
-    </bean>
-    <bean id="wormHotelSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="wormHotelDataSource" />
-        <property name="mapperLocations" value="classpath*:com/mysql/mapper/*Mapper.xml"/>
-    </bean>
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.mysql.mapper" />
-        <property name="sqlSessionFactoryBeanName" value="wormHotelSqlSessionFactory" />
-    </bean>
-    <tx:annotation-driven transaction-manager="wormHotelTransactionManager" />
-
 
     <mvc:interceptors>
         <bean class="com.collect.mybatisInteceptor.SqlCostInterceptor"/>
