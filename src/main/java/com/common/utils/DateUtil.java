@@ -1,7 +1,6 @@
 package com.common.utils;
 
 
-import com.mysql.jdbc.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,24 +20,6 @@ public class DateUtil {
 		calendar.setTime(date);
 		
 		return calendar;
-	}
-
-	public static Date StringToDate( String date ) throws Exception{
-		
-		if(StringUtils.isNullOrEmpty(date)){
-			throw new Exception("input date string is null");
-		}
-		
-		Date resultDate=new Date();
-		
-		try{
-			SimpleDateFormat format = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT_PATTERN);
-			resultDate = format.parse(date);
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-		
-		return resultDate;
 	}
 
 	public static Date TimspanToDate(Long ticks) {
