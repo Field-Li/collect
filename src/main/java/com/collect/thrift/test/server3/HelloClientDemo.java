@@ -1,21 +1,17 @@
-package com.collect.thrift.test;
+package com.collect.thrift.test.server3;
 
-
+import com.collect.thrift.test.HelloWorldService;
 import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
-/**
- * 参考地址：http://www.micmiu.com/soa/rpc/thrift-sample/#respond
- *
- * @author Michael
- */
 public class HelloClientDemo {
 
-    public static final String SERVER_IP = "10.32.114.30";
+    public static final String SERVER_IP = "localhost";
     public static final int SERVER_PORT = 8090;
     public static final int TIMEOUT = 30000;
 
@@ -25,11 +21,10 @@ public class HelloClientDemo {
     public void startClient(String userName) {
         TTransport transport = null;
         try {
-            transport = new TSocket(SERVER_IP, SERVER_PORT, TIMEOUT);
+            transport = new TFramedTransport(new TSocket(SERVER_IP,
+                    SERVER_PORT, TIMEOUT));
             // 协议要和服务端一致
-            TProtocol protocol = new TBinaryProtocol(transport);
-            // TProtocol protocol = new TCompactProtocol(transport);
-            // TProtocol protocol = new TJSONProtocol(transport);
+            TProtocol protocol = new TCompactProtocol(transport);
             HelloWorldService.Client client = new HelloWorldService.Client(
                     protocol);
             transport.open();
