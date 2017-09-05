@@ -9,8 +9,14 @@ public class WeakHashMapTest {
         WeakHashMap weak = new WeakHashMap();
         weak.put("ss", "ss");
 
-        Set<String> set = new HashSet<String>();
-        set.add("ssss");
+        Set<Person> set = new HashSet<Person>();
+        Person p1 = new Person("lifan", 12, "男", "程序员");
+        Person p2 = new Person("lifan", 12, "男", "程序员2");
+
+        set.add(p1);
+        set.add(p2);
+
+        System.out.println(set);
 
         List<String> list = new LinkedList<String>();
         list.add("A");
