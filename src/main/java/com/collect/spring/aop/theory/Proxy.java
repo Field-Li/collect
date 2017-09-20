@@ -1,4 +1,4 @@
-package com.collect.spring.aop;
+package com.collect.spring.aop.theory;
 
 import javax.tools.JavaCompiler;
 import javax.tools.StandardJavaFileManager;

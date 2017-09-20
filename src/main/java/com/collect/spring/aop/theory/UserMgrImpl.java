@@ -1,4 +1,4 @@
-package com.collect.spring.aop;
+package com.collect.spring.aop.theory;
 
 public class UserMgrImpl implements UserMgr {
 

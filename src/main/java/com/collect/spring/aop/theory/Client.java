@@ -1,4 +1,4 @@
-package com.collect.spring.aop;
+package com.collect.spring.aop.theory;
 
 /**
  * JDK动态代理原理：用反射重新构造一个新的实现类（与另一个实现类有相同的功能），用该代理类去调用方法。

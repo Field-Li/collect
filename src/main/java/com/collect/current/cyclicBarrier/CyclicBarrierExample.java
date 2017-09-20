@@ -26,6 +26,7 @@ public class CyclicBarrierExample {
         //ThreadPoolExecutor threadPool = new ThreadPoolExecutor(1,1,60,TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>(count));
         ExecutorService threadPool =  Executors.newFixedThreadPool(count);
 
+        Thread.sleep(10);
 
         System.out.println("公司发送通知，每一位员工在周六早上8点【自驾车】到公司大门口集合");
         for(int i =0;i<count ;i++){
