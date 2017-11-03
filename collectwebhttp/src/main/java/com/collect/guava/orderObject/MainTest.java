@@ -2,6 +2,7 @@ package com.collect.guava.orderObject;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -15,16 +16,22 @@ import java.util.List;
 public class MainTest {
     public static void main(String[] args) {
         Joiner join = Joiner.on(",").skipNulls();
-        List<Foo> list = Lists.newArrayList(new Foo(1,2,3), new Foo(1, 5, 6));
+        List<Foo> list = Lists.newArrayList(new Foo(1,2,3), new Foo(3, 5, 6));
+        List<Foo> copyRouteMatrix = ImmutableList.copyOf(list);
         Collections.sort(list, new Comparator<Foo>() {
             @Override
             public int compare(Foo f1, Foo f2) {
-                return f2.a.compareTo(f1.a);
+                return ComparisonChain.start()
+                        .compare(f2.a, f1.a)
+                       .result();
+//                return f2.a.compareTo(f1.a);
 //                int resultA = f1.a - f2.a;
 //                int resultB = f1.b - f2.b;
 //                return resultA > 0 ? (resultB == 0 ? f1.c - f2.c : resultB) :resultA;
             }
         });
+
+        int aa = copyRouteMatrix.indexOf(list.get(0));
         for(Foo foo : list){
             System.out.println(foo.a + "," + foo.b + "," + foo.c);
         }

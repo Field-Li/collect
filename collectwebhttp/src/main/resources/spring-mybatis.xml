@@ -25,9 +25,10 @@
     <import resource="classpath:datasource-mysql.xml"/>
     <!-- 定义datasource -->
 
-    <mvc:interceptors>
+    <!--<mvc:interceptors>
         <bean class="com.collect.mybatisInteceptor.SqlCostInterceptor"/>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
+
 
     <!-- 配置freeMarker的模板路径 -->
     <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">

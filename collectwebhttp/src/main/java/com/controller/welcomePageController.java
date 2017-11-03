@@ -29,9 +29,9 @@ public class welcomePageController {
     public ModelAndView firstPage() {
 
         productMapper.selectProductOwnerId(2222L);
-        return new ModelAndView("index");
+        productMapper.updateByProductId(222L);
 
-        /*Cloner cloner = new Cloner();
+        Cloner cloner = new Cloner();
         cloner.deepClone(ProductServiceImp.class);
 
 
@@ -47,7 +47,7 @@ public class welcomePageController {
         map.put("jobName", "HelloJob");
         map.put("groupName", "HelloGroup");
         map.put("time", date);
-        return new ModelAndView("index", map);*/
+        return new ModelAndView("index", map);
     }
 
     @RequestMapping("/trigger")

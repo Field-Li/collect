@@ -15,7 +15,7 @@
 
         <!-- !!!! Database Configurations !!!! -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://groupwormhole.mysql.db.fat.qa.nt. corp.com:55111/groupwormholedb?characterEncoding=utf8"
+                        connectionURL="jdbc:mysql://"
                         userId="us_test_  a"
                         password="rootroot"/>
 
