@@ -1,0 +1,105 @@
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
+
+/**
+ * Created by LIFAN448 on 2018/4/24 9:59
+ */
+public class LogWrapper {
+
+    private Logger logger;
+    private static ConcurrentMap<String, Logger> conCurrentMap;
+
+    static {
+        conCurrentMap = new ConcurrentHashMap<String, Logger>();
+    }
+
+    private List<String> tagList = new ArrayList<String>();
+
+    public LogWrapper getLogWrapper(Class clazz) {
+        if (null == conCurrentMap.get(clazz.getName())) {
+            this.logger = LoggerFactory.getLogger(clazz.getName());
+            conCurrentMap.put(clazz.getName(), this.logger);
+        } else {
+            this.logger = conCurrentMap.get(clazz.getName());
+        }
+        return this;
+    }
+
+    private LogWrapper() {
+
+    }
+
+    public static LogWrapper getInstance() {
+//        return LogWrapperHolder.logWrapper;//不用单例模式，tagList不共用
+        return new LogWrapper();
+    }
+
+    private static class LogWrapperHolder {
+        private static final LogWrapper logWrapper = new LogWrapper();
+    }
+
+
+    public LogWrapper addTag(String tagName) {
+        tagList.add("[" + Strings.nullToEmpty(tagName) + "]");
+        return this;
+    }
+
+    public void info(String info) {
+        String tagNameList = tagList.stream().collect(Collectors.joining());
+        logger.info(tagNameList + Strings.nullToEmpty(info));
+        tagList.clear();
+    }
+
+    public void info(String info, Object... content) {
+        String tagNameList = tagList.stream().collect(Collectors.joining());
+        logger.info(tagNameList + Strings.nullToEmpty(info), content);
+        tagList.clear();
+    }
+
+    public void warn(String warn) {
+        String tagNameList = tagList.stream().collect(Collectors.joining());
+        logger.warn(tagNameList + Strings.nullToEmpty(warn));
+        tagList.clear();
+    }
+
+    public void warn(String warn, Object... content) {
+        String tagNameList = tagList.stream().collect(Collectors.joining());
+        logger.warn(tagNameList + Strings.nullToEmpty(warn), content);
+        tagList.clear();
+    }
+
+    public void error(String content) {
+        String tagNameList = tagList.stream().collect(Collectors.joining());
+        logger.error(tagNameList + Strings.nullToEmpty(content));
+        tagList.clear();
+    }
+
+    public void error(String error, Object content) {
+        String tagNameList = tagList.stream().collect(Collectors.joining());
+        logger.error(tagNameList + Strings.nullToEmpty(error), content);
+        tagList.clear();
+    }
+
+    public static void main(String[] args) {
+
+        new Thread(() -> {
+            LogWrapper log = LogWrapper.getInstance().getLogWrapper(Exception.class);
+            log.addTag("abc").addTag("def").info("i am {},welcome!{}", "flory", "ttt");
+        }).start();
+
+        new Thread(() -> {
+            LogWrapper log = LogWrapper.getInstance().getLogWrapper(Exception.class);
+            log.addTag("123").addTag("456").info("i am {},welcome!{}", "flory", "ttt");
+        }).start();
+
+        LogWrapper log = LogWrapper.getInstance().getLogWrapper(Exception.class);
+        log.addTag("abc").addTag("def").info("i am {},welcome!{}", "flory", "ttt");
+    }
+}
