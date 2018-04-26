@@ -1,0 +1,19 @@
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+/**
+ * Created by LIFAN448 on 2018/4/26 8:50
+ */
+public class LogWrapperFactory {
+    private static ConcurrentMap<String, LogWrapper> concurrentMap = new ConcurrentHashMap<String, LogWrapper>();
+
+    public static LogWrapper getLogWrapper(Class clazz){
+        LogWrapper logWrapper = concurrentMap.get(clazz.getName());
+        if(null == logWrapper){
+            logWrapper = new LogWrapper(clazz);
+            concurrentMap.put(clazz.getName(), logWrapper);
+        }
+        return logWrapper;
+    }
+}
