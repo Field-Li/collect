@@ -1,12 +1,11 @@
 import com.google.common.base.Strings;
+import com.pingan.bloan.warrant.controller.WarrantController;
+import com.pingan.bloan.warrant.utils.JsonUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Created by LIFAN448 on 2018/4/24 9:59
@@ -14,92 +13,147 @@ import java.util.stream.Collectors;
 public class LogWrapper {
 
     private Logger logger;
-    private static ConcurrentMap<String, Logger> conCurrentMap;
+    private ThreadLocal<List<Map<String, Object>>> tagThreadLocal = new ThreadLocal<List<Map<String, Object>>>();
 
-    static {
-        conCurrentMap = new ConcurrentHashMap<String, Logger>();
-    }
-
-    private List<String> tagList = new ArrayList<String>();
-
-    public LogWrapper getLogWrapper(Class clazz) {
-        if (null == conCurrentMap.get(clazz.getName())) {
-            this.logger = LoggerFactory.getLogger(clazz.getName());
-            conCurrentMap.put(clazz.getName(), this.logger);
-        } else {
-            this.logger = conCurrentMap.get(clazz.getName());
+    public LogWrapper(Class clazz) {
+        this.logger = LoggerFactory.getLogger(clazz.getName());
+        if (null == tagThreadLocal.get()) {
+            tagThreadLocal.set(new ArrayList<Map<String, Object>>());
         }
+    }
+
+    public void clearTags() {
+        this.tagThreadLocal.set(new ArrayList());
+    }
+
+    public LogWrapper addTag(String tagName, Object tagValue) {
+        List<Map<String, Object>> list = (List) tagThreadLocal.get();
+        list = Optional.ofNullable(list).orElse(new ArrayList<Map<String, Object>>());
+        Map<String, Object> tmap = new HashMap<String, Object>();
+        tmap.put(tagName, tagValue);
+        list.add(tmap);
+        tagThreadLocal.set(list);
         return this;
     }
 
-    private LogWrapper() {
 
+    private void commonWriteLog(LogType logType, String firstParam) {
+        StringBuilder tagsBuilder = new StringBuilder("[[ThreadName," + Thread.currentThread().getName()+"]]");
+
+        List<Map<String, Object>> list = (List) tagThreadLocal.get();
+        if (CollectionUtils.isNotEmpty(list)) {
+            list.stream().forEach(itemMap->{itemMap.forEach((k,v)->{tagsBuilder.append("[[" + Strings.nullToEmpty(k) + "," + Strings.nullToEmpty(String.valueOf(v)) + "]]");});});
+        }
+        switch (logType) {
+            case INFO:
+                logger.info(tagsBuilder.toString() + Strings.nullToEmpty(firstParam));
+                break;
+            case WARN:
+                logger.warn(tagsBuilder.toString() + Strings.nullToEmpty(firstParam));
+                break;
+            case ERROR:
+                logger.error(tagsBuilder.toString() + Strings.nullToEmpty(firstParam));
+                break;
+            default:
+                logger.info(tagsBuilder.toString() + Strings.nullToEmpty(firstParam));
+        }
+        clearTags();
     }
 
-    public static LogWrapper getInstance() {
-//        return LogWrapperHolder.logWrapper;//不用单例模式，tagList不共用
-        return new LogWrapper();
+    private void commonWriteLog(LogType logType, String firstParam, Object... content) {
+        StringBuilder tagsBuilder = new StringBuilder("[[ThreadName," + Thread.currentThread().getName()+"]]");
+        System.out.println("TTT1:"+String.valueOf(tagsBuilder));
+
+        List<Map<String, Object>> list = (List<Map<String, Object>>) tagThreadLocal.get();
+        if (CollectionUtils.isNotEmpty(list)) {
+            list.stream().forEach(itemMap->{itemMap.forEach((k,v)->{tagsBuilder.append("[[" + Strings.nullToEmpty(k) + "," + Strings.nullToEmpty(String.valueOf(v)) + "]]");});});
+        }
+        System.out.println("TTT2:"+String.valueOf(tagsBuilder));
+        switch (logType) {
+            case INFO:
+                logger.info(tagsBuilder.toString() + Strings.nullToEmpty(firstParam), content);
+                break;
+            case WARN:
+                logger.warn(tagsBuilder.toString() + Strings.nullToEmpty(firstParam), content);
+                break;
+            case ERROR:
+                logger.error(tagsBuilder.toString() + Strings.nullToEmpty(firstParam), content);
+                break;
+            default:
+                logger.info(tagsBuilder.toString() + Strings.nullToEmpty(firstParam), content);
+        }
+        clearTags();
     }
 
-    private static class LogWrapperHolder {
-        private static final LogWrapper logWrapper = new LogWrapper();
+    public void info(String firstParam) {
+        commonWriteLog(LogType.INFO, firstParam);
+    }
+
+    public void info(String firstParam, Object... content) {
+        commonWriteLog(LogType.INFO, firstParam, content);
+    }
+
+    public void warn(String firstParam) {
+        commonWriteLog(LogType.WARN, firstParam);
+    }
+
+    public void warn(String firstParam, Object... content) {
+        commonWriteLog(LogType.WARN, firstParam);
+    }
+
+    public void error(String firstParam) {
+        commonWriteLog(LogType.ERROR, firstParam);
+    }
+
+    public void error(String firstParam, Object content) {
+        commonWriteLog(LogType.ERROR, firstParam);
+    }
+
+    public static void main(String[] args) throws Exception{
+
+//        new Thread(() -> {
+//            LogWrapper log = LogWrapperFactory.getLogWrapper(LogWrapper.class);
+//            log.addTag("abc", "abc").addTag("def", "def").info("i am {},welcome!{}", "flory", "ttt");
+//        }).start();
+//
+//        new Thread(() -> {
+//            LogWrapper log2 = LogWrapperFactory.getLogWrapper(WarrantController.class);
+//            log2.addTag("123", "123").addTag("456", "456").info("i am {},welcome!{}", "flory", "ttt");
+//        }).start();
+
+        Thread.sleep(5000);
+        LogWrapper log3 = LogWrapperFactory.getLogWrapper(Exception.class);
+        log3.addTag("abc", "abc").addTag("def", "def").info("i am {},welcome!{}", "flory", "ttt");
     }
 
 
-    public LogWrapper addTag(String tagName) {
-        tagList.add("[" + Strings.nullToEmpty(tagName) + "]");
-        return this;
-    }
+    private enum LogType {
+        INFO(1, "info"),
+        WARN(2, "warn"),
+        ERROR(3, "error");
 
-    public void info(String info) {
-        String tagNameList = tagList.stream().collect(Collectors.joining());
-        logger.info(tagNameList + Strings.nullToEmpty(info));
-        tagList.clear();
-    }
+        private Integer code;
+        private String msg;
 
-    public void info(String info, Object... content) {
-        String tagNameList = tagList.stream().collect(Collectors.joining());
-        logger.info(tagNameList + Strings.nullToEmpty(info), content);
-        tagList.clear();
-    }
+        LogType(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
 
-    public void warn(String warn) {
-        String tagNameList = tagList.stream().collect(Collectors.joining());
-        logger.warn(tagNameList + Strings.nullToEmpty(warn));
-        tagList.clear();
-    }
+        public Integer getCode() {
+            return code;
+        }
 
-    public void warn(String warn, Object... content) {
-        String tagNameList = tagList.stream().collect(Collectors.joining());
-        logger.warn(tagNameList + Strings.nullToEmpty(warn), content);
-        tagList.clear();
-    }
+        public void setCode(Integer code) {
+            this.code = code;
+        }
 
-    public void error(String content) {
-        String tagNameList = tagList.stream().collect(Collectors.joining());
-        logger.error(tagNameList + Strings.nullToEmpty(content));
-        tagList.clear();
-    }
+        public String getMsg() {
+            return msg;
+        }
 
-    public void error(String error, Object content) {
-        String tagNameList = tagList.stream().collect(Collectors.joining());
-        logger.error(tagNameList + Strings.nullToEmpty(error), content);
-        tagList.clear();
-    }
-
-    public static void main(String[] args) {
-
-        new Thread(() -> {
-            LogWrapper log = LogWrapper.getInstance().getLogWrapper(Exception.class);
-            log.addTag("abc").addTag("def").info("i am {},welcome!{}", "flory", "ttt");
-        }).start();
-
-        new Thread(() -> {
-            LogWrapper log = LogWrapper.getInstance().getLogWrapper(Exception.class);
-            log.addTag("123").addTag("456").info("i am {},welcome!{}", "flory", "ttt");
-        }).start();
-
-        LogWrapper log = LogWrapper.getInstance().getLogWrapper(Exception.class);
-        log.addTag("abc").addTag("def").info("i am {},welcome!{}", "flory", "ttt");
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
     }
 }
