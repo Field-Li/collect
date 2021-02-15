@@ -18,6 +18,7 @@ public class CountDownLatchTest {
 
         for (int i = 0; i < nThreads; i++) {
             Thread t = new Thread() {
+                @Override
                 public void run() {
                     try {
                         Thread.sleep(800);

@@ -142,9 +142,9 @@ public class Tree {
     public static void main(String[] args) {
         Tree tree = new Tree();
         tree.initTree();
-         tree.preOrder(tree.getRoot());
+//         tree.preOrder(tree.getRoot());
         // tree.nonRecursivePreOrder();
-        // tree.inOrder(tree.getRoot());
+         tree.inOrder(tree.getRoot());
         // tree.nonRecursiveInOrder();
         // tree.postOrder(tree.getRoot());
         // tree.notRecursivePostOrder();
